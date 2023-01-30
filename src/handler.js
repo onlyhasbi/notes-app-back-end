@@ -93,7 +93,7 @@ function deleteNoteByIdHandler(request, h) {
         status: "success",
         message: "Catatan berhasil dihapus",
       })
-      .code(201);
+      .code(200);
   }
 
   return h
