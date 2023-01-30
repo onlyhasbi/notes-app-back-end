@@ -87,7 +87,7 @@ function deleteNoteByIdHandler(request, h) {
   const index = notes.findIndex((note) => note.id === id);
 
   if (index !== -1) {
-    notes.filter((note) => note.id !== id);
+    notes.splice(index, 1);
     return h
       .response({
         status: "success",
