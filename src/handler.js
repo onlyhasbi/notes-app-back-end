@@ -24,6 +24,7 @@ function addNoteHandler(request, h) {
   return isSuccess
     ? h
         .response({
+          status:'success',
           message: "catatan berhasil ditambahkan",
           data: { noteId: id },
         })
