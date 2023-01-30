@@ -44,9 +44,7 @@ function getNoteByIdHandler(request, h) {
   return note
     ? h.response({ status: "success", data: { note } }).code(200)
     : h
-        .response({
-          data: { status: "fail", message: "Catatan tidak ditemukan" },
-        })
+        .response({ status: "fail", message: "Catatan tidak ditemukan" })
         .code(404);
 }
 
