@@ -1,4 +1,5 @@
 const { response } = require("@hapi/hapi/lib/validation");
+const ClientError = require("../../exceptions/ClientError");
 
 class NotesHandler {
   constructor(service, validator) {
@@ -25,11 +26,20 @@ class NotesHandler {
       response.code(201);
       return response;
     } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: "fail",
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
       const response = h.response({
-        status: "fail",
-        message: error.message,
+        status: "error",
+        message: "Maaf, terjadi kegagalan pada server kami.",
       });
-      response.code(400);
+      response.code(500);
       return response;
     }
   }
@@ -55,11 +65,20 @@ class NotesHandler {
       response.code(200);
       return response;
     } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: "fail",
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
       const response = h.response({
-        status: "fail",
-        message: error.message,
+        status: "error",
+        message: "Maaf, terjadi kegagalan pada server kami.",
       });
-      response.code(404);
+      response.code(500);
       return response;
     }
   }
@@ -75,11 +94,20 @@ class NotesHandler {
         message: "Catatan berhasil diperbarui",
       };
     } catch (error) {
+      if (error instanceof ErrorClient) {
+        const response = h.response({
+          status: "fail",
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
       const response = h.response({
-        status: "fail",
-        message: error.message,
+        status: "error",
+        message: "Maaf, terjadi kegagalan pada server kami.",
       });
-      response.code(404);
+      response.code(500);
       return response;
     }
   }
@@ -93,12 +121,21 @@ class NotesHandler {
         message: "Catatan berhasil dihapus",
       };
     } catch (error) {
-      const response = h.response({
-        status: "fail",
-        message: "Gagal mengapus catatan",
-      });
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: "fail",
+          message: "Gagal mengapus catatan",
+        });
 
-      response.code(404);
+        response.code(error.statusCode);
+        return response;
+      }
+
+      const response = h.response({
+        status: "error",
+        message: "Maaf, terjadi kegagalan pada server kami.",
+      });
+      response.code(500);
       return response;
     }
   }
