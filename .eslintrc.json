@@ -1,27 +1,23 @@
 {
-    "env": {
-        "browser": true,
-        "node": true,
-        "commonjs": true
-    },
-    "extends": [
-        "airbnb",
-        "prettier"
-    ],
-    "plugins": [
-        "prettier"
-    ],
-    "overrides": [],
-    "parserOptions": {
-        "ecmaVersion": "latest"
-    },
+  "env": {
+    "browser": true,
+    "node": true,
+    "commonjs": true
+  },
+  "extends": ["airbnb", "prettier", "plugin:node/recommended"],
+  "plugins": ["prettier"],
+  "overrides": [],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
 
-    "rules": {
-        "no-unused-vars": "warn",
-        "no-console": "off",
-        "func-names": "off",
-        "no-process-exit": "off",
-        "object-shorthand": "off",
-        "class-methods-use-this": "off"
-    }
+  "rules": {
+    "prettier/prettier": "error",
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "func-names": "off",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "class-methods-use-this": "off"
+  }
 }
