@@ -2,6 +2,7 @@
   "env": {
     "browser": true,
     "node": true,
+    "es2021": true,
     "commonjs": true
   },
   "extends": ["airbnb", "prettier", "plugin:node/recommended"],
@@ -10,7 +11,6 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
-
   "rules": {
     "no-unused-vars": "warn",
     "no-console": "off",
@@ -27,6 +27,9 @@
       {
         "endOfLine": "auto"
       }
-    ]
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2018
+    }
   }
 }

@@ -6,14 +6,20 @@ const NotesService = require('./services/postgres/NotesService');
 const NotesValidator = require('./validator/notes');
 
 const users = require('./api/users');
-const UserService = require('./services/postgres/UserService');
+const UsersService = require('./services/postgres/UsersService');
 const UserValidator = require('./validator/users');
+
+const authentications = require('./api/authentications');
+const AuthenticationsService = require('./services/postgres/AuthenticationsService');
+const TokenManager = require('./tokenize/TokenManager');
+const AuthenticationsValidator = require('./validator/authentications');
 
 const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
   const notesService = new NotesService();
-  const userService = new UserService();
+  const usersService = new UsersService();
+  const authenticationsService = new AuthenticationsService();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -36,35 +42,44 @@ const init = async () => {
     {
       plugin: users,
       options: {
-        service: userService,
+        service: usersService,
         validator: UserValidator,
+      },
+    },
+    {
+      plugin: authentications,
+      options: {
+        authenticationsService,
+        usersService,
+        tokenManager: TokenManager,
+        validator: AuthenticationsValidator,
       },
     },
   ]);
 
-  server.ext('onPreResponse', (request, h) => {
-    const { response } = request;
+  server.ext('onPreResponse', ({ response }, h) => {
+    const { message, isServer, statusCode } = response;
 
     if (response instanceof Error) {
       if (response instanceof ClientError) {
         const newResponse = h.response({
           status: 'fail',
-          message: response.message,
+          message: message,
         });
 
-        newResponse.code(response.statusCode);
+        newResponse.code(statusCode);
         return newResponse;
       }
 
-      if (!response.isServer) {
+      if (!isServer) {
         return h.continue;
       }
 
       const newResponse = h.response({
         status: 'fail',
-        message: response.message,
+        message: message,
       });
-      newResponse.code(response.statusCode);
+      newResponse.code(statusCode);
       return newResponse;
     }
 

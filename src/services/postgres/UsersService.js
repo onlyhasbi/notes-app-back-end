@@ -4,10 +4,34 @@ const bcrypt = require('bcrypt');
 const InvariantError = require('../../exceptions/InvariantError');
 const ClientError = require('../../exceptions/ClientError');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const AuthenticationError = require('../../exceptions/AuthenticationError');
 
-class UserService {
+class UsersService {
   constructor() {
     this._pool = new Pool();
+  }
+
+  async verifyUserCredential(username, password) {
+    const query = {
+      text: 'SELECT id,password FROM users WHERE username=$1',
+      values: [username],
+    };
+
+    const { rows } = await this._pool.query(query);
+
+    if (!rows.length) {
+      throw new AuthenticationError('Kredensial yang anda berikan salah');
+    }
+
+    const { id, password: hashedPassword } = rows[0];
+
+    const match = await bcrypt.compare(password, hashedPassword);
+
+    if (!match) {
+      throw new AuthenticationError('Kredensial yang anda berikan salah');
+    }
+
+    return id;
   }
 
   async verifyNewUsername(username) {
@@ -60,4 +84,4 @@ class UserService {
   }
 }
 
-module.exports = UserService;
+module.exports = UsersService;
