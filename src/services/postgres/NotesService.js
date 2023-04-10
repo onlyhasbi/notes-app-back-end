@@ -19,18 +19,18 @@ class NotesService {
       values: [id, title, body, tags, createdAt, updatedAt],
     };
 
-    const result = await this._pool.query(query);
+    const { rows } = await this._pool.query(query);
 
-    if (!result.rows[0].id) {
+    if (!rows[0].id) {
       throw new InvariantError('Catatan gagal ditambahkan');
     }
 
-    return result.rows[0].id;
+    return rows[0].id;
   }
 
   async getNotes() {
-    const result = await this._pool.query('SELECT * FROM notes');
-    return result.rows.map(mapDBToModel);
+    const { rows } = await this._pool.query('SELECT * FROM notes');
+    return rows.map(mapDBToModel);
   }
 
   async getNoteById(id) {
@@ -39,13 +39,13 @@ class NotesService {
       values: [id],
     };
 
-    const result = await this._pool.query(query);
+    const { rowCount, rows } = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!rowCount) {
       throw new NotFoundError('Catatan tidak ditemukan');
     }
 
-    return result.rows.map(mapDBToModel)[0];
+    return rows.map(mapDBToModel)[0];
   }
 
   async editNoteById(id, { title, body, tags }) {
@@ -55,9 +55,9 @@ class NotesService {
       values: [title, body, tags, updatedAt, id],
     };
 
-    const result = await this._pool.query(query);
+    const { rowCount } = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!rowCount) {
       throw new NotFoundError(
         'Gagal memperbaharui catatan. Id tidak ditemukan'
       );
@@ -70,9 +70,9 @@ class NotesService {
       values: [id],
     };
 
-    const result = await this._pool.query(query);
+    const { rowCount } = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!rowCount) {
       throw new NotFoundError('Gagal menghapus catatan. Id tidak ditemukan');
     }
   }

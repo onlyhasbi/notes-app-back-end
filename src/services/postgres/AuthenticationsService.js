@@ -17,13 +17,13 @@ class AuthenticationsService {
 
   async verifyRefreshToken(token) {
     const query = {
-      text: 'SELECT token FROM authentications WHERE token=$1',
+      text: 'SELECT * FROM authentications WHERE token=$1',
       values: [token],
     };
 
-    const { rows } = await this._pool.query(query);
+    const { rowCount } = await this._pool.query(query);
 
-    if (!rows.length) {
+    if (!rowCount) {
       throw new InvariantError('Refresh token tidak valid');
     }
   }

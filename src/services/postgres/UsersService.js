@@ -17,9 +17,9 @@ class UsersService {
       values: [username],
     };
 
-    const { rows } = await this._pool.query(query);
+    const { rowCount, rows } = await this._pool.query(query);
 
-    if (!rows.length) {
+    if (!rowCount) {
       throw new AuthenticationError('Kredensial yang anda berikan salah');
     }
 
@@ -40,9 +40,9 @@ class UsersService {
       values: [username],
     };
 
-    const { rows } = await this._pool.query(query);
+    const { rowCount } = await this._pool.query(query);
 
-    if (rows.length > 0) {
+    if (rowCount) {
       throw new ClientError(
         'Gagal menambahkan user. Username sudah digunakan.'
       );
@@ -59,9 +59,9 @@ class UsersService {
       values: [id, username, hashedPassword, fullname],
     };
 
-    const { rows } = await this._pool.query(query);
+    const { rowCount, rows } = await this._pool.query(query);
 
-    if (!rows.length) {
+    if (!rowCount) {
       throw new InvariantError('user gagal ditambahkan');
     }
 
@@ -74,9 +74,9 @@ class UsersService {
       values: [id],
     };
 
-    const { rows } = await this._pool.query(query);
+    const { rowCount, rows } = await this._pool.query(query);
 
-    if (!rows.length) {
+    if (!rowCount) {
       throw new NotFoundError('user id tidak ditemukan');
     }
 
