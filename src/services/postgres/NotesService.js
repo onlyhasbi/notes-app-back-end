@@ -49,8 +49,6 @@ class NotesService {
   }
 
   async getNotes(owner) {
-    console.log(owner);
-
     const query = {
       text: 'SELECT * FROM notes WHERE owner=$1',
       values: [owner],

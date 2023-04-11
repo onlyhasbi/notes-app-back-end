@@ -4,9 +4,8 @@ class NotesHandler {
     this._validator = validator;
   }
 
-  async postNoteHandler({ payload, auth }, h) {
+  async postNoteHandler({ auth, payload }, h) {
     this._validator.validateNotePayload(payload);
-    console.log(auth);
 
     const { title = 'untitled', body, tags } = payload;
     const { id: credentialId } = auth.credentials;
@@ -39,7 +38,7 @@ class NotesHandler {
     };
   }
 
-  async getNoteByIdHandler({ params, auth }, h) {
+  async getNoteByIdHandler({ auth, params }, h) {
     const { id } = params;
     const { id: credentialId } = auth.credentials;
 
@@ -55,7 +54,7 @@ class NotesHandler {
     return response;
   }
 
-  async putNoteByIdHandler({ params, payload, auth }) {
+  async putNoteByIdHandler({ auth, params, payload }) {
     this._validator.validateNotePayload(payload);
 
     const { id } = params;
@@ -70,7 +69,7 @@ class NotesHandler {
     };
   }
 
-  async deleteNoteByIdHandler({ params, auth }) {
+  async deleteNoteByIdHandler({ auth, params }) {
     const { id } = params;
     const { id: credentialId } = auth.credentials;
 
