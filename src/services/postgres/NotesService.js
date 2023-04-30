@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const { mapDBToModel } = require('../../utils');
@@ -6,14 +8,15 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 
 class NotesService {
-  constructor() {
+  constructor(collaborationService) {
     this._pool = new Pool();
+    this._collaborationService = collaborationService;
   }
 
-  async verifyNoteOwner(id, owner) {
+  async verifyNoteOwner(noteId, userId) {
     const query = {
-      text: 'SELECT * FROM notes WHERE id=$1',
-      values: [id],
+      text: 'SELECT * FROM notes WHERE id = $1',
+      values: [noteId],
     };
 
     const { rowCount, rows } = await this._pool.query(query);
@@ -24,8 +27,24 @@ class NotesService {
 
     const note = rows[0];
 
-    if (note.owner !== owner) {
+    if (note.owner !== userId) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
+    }
+  }
+
+  async verifyNoteAccess(noteId, userId) {
+    try {
+      await this.verifyNoteOwner(noteId, userId);
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        throw error;
+      }
+
+      try {
+        await this._collaborationService.verifyCollaborator(noteId, userId);
+      } catch {
+        throw error;
+      }
     }
   }
 
