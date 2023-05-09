@@ -8,7 +8,7 @@ class UserHandler {
     const { username = '' } = query;
     const users = await this._service.getUsersByUsername(username);
     return {
-      status: 'success',
+      status: 'success',  
       data: {
         users,
       },
